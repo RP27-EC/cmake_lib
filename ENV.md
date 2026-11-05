@@ -73,7 +73,20 @@ Hello World! qemu_cortex_m3/ti_lm3s6965
    7516     398    4038   11952    2eb0
 ```
 
-## 6. 未做/待办
+## 6. 代码放哪 / 怎么构建（已实测）
+
+| 用途 | 目录 | 构建方式 |
+| --- | --- | --- |
+| 纯 CMake 小库（T1.3～T1.4） | `w1/t1.3-cmake-lib/` | `cmake -S . -B build -G Ninja && cmake --build build`（主机程序，与 Zephyr 无关） |
+| Zephyr 应用（W2 起） | `w2/<task>/`、`w3/<task>/`… | `cd <应用目录> && west build -b qemu_cortex_m3 .`，运行 `west build -t run` |
+| IDE 索引 | 每个应用目录 | `west build -b qemu_cortex_m3 . -- -DCMAKE_EXPORT_COMPILE_COMMANDS=ON` 生成 `build/compile_commands.json` |
+
+学习仓库真实位置：`/home/hqz/zephyrproject/apps/embedded-study`，软链接 `/home/hqz/embedded-study` 指向它。
+放进 `~/zephyrproject/apps/` 的原因：`west build` 需要能从当前目录向上找到 `.west` 工作区，放在工作区外会报 "not in a west workspace"；而 `apps/` 不属于 zephyr 仓库，仍是独立 git 仓库。
+
+实测样例：`w1/t1.1-oot-hello/`（hello_world 的 out-of-tree 副本，改了一行输出），已构建并运行通过，输出 `Zephyr 起来了：qemu_cortex_m3/ti_lm3s6965`。
+
+## 7. 未做/待办
 
 - 未接任何真实硬件；未烧录。C 板移植推迟到 W5+（上游无 board 定义）。
 - 未执行 `sudo usermod -aG dialout $USER`（当前用户不在 dialout 组，接板前必须做并重新登录）。
